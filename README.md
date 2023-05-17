@@ -1,24 +1,6 @@
-# Hangman Game
+# Hangman
 
-This repository contains a simple implementation of the Hangman game in Ruby. The game randomly selects a word from a dictionary file and prompts the player to guess letters until they either solve the word or run out of guesses.
-
-## Features
-
-- Word selection: The game selects a random word from a dictionary file containing 10,000 English words.
-- Word length filtering: Only words with a length between 6 and 11 characters are considered for the game.
-- Guessing letters: Players can guess individual letters to uncover them in the hidden word.
-- Game over conditions: The game ends when the player has no more guesses left or when they correctly guess the entire word.
-- Play again: After each game, players have the option to play again or exit the game.
-
-## Usage
-
-1. Make sure you have Ruby installed on your system.
-2. Clone this repository to your local machine.
-3. Navigate to the repository's directory.
-4. Run the following command to start the game:
-   ```
-   ruby hangman.rb
-   ```
+This is a simple implementation of the Hangman game in Ruby. The game randomly selects a word from a dictionary and challenges the player to guess the letters of the word within a limited number of guesses.
 
 ## Dependencies
 
@@ -27,15 +9,51 @@ This Hangman game relies on the following dependencies:
 - Ruby (at least version 3.2.2)
 - CSV (Ruby standard library)
 
+## Installation and Usage
+
+1. Clone or download the Hangman repository to your local machine.
+2. Navigate to the Hangman directory.
+
+### Game Instructions
+
+1. Make sure you have the `dictionary.csv` file containing a list of English words.
+2. Open a terminal or command prompt and navigate to the `Hangman` directory.
+3. Run the following command to start the game:
+
+   ```bash
+   ruby main.rb
+   ```
+
+4. The game will prompt you to enter a letter as your guess. Enter a single letter and press Enter.
+5. Continue guessing letters until you either guess the word correctly or run out of guesses.
+6. If you want to save your progress and quit the game, enter `1` as your guess. You can later load the saved game when starting a new game.
+7. After each game, you will be prompted to play again or quit.
+
+## Implementation Details
+
+- The game is implemented in the `Game` class, defined in the `main.rb` file.
+- The `Game` class uses the `CSV` and `YAML` libraries to read from and write to files.
+- The `correct_size` method filters the words in the dictionary based on their length, selecting only words between 6 and 11 characters long.
+- The `choose_word` method randomly selects a word from the filtered dictionary and splits it into an array of characters.
+- The `check_letter` method checks if a guessed letter is present in the word and updates the `guess_array` accordingly.
+- The `game_over?` method checks if the game is over by determining if the player has no more guesses left or if the `guess_array` matches the word.
+- The `check_win` method determines if the player has won or lost the game based on the `game_over?` condition and displays an appropriate message.
+- The `play_again` method asks the player if they want to play another game and initiates a new game if the input is 'y'.
+- The `save_game` method saves the game data to a YAML file for later retrieval.
+- The `load_game` method loads the game data from the YAML file if it exists.
+- The `ask_to_load_save` method asks the player if they want to load the previous game.
+- The `clear_saved_game` method deletes the YAML file to clear the saved game.
+- The `play_round` method handles a single round of the game, prompting the player for a guess, updating the `guess_array` and `used_letters`, and decrementing the number of remaining guesses.
+- The `play` method sets up and runs a game round by choosing a word, initializing variables, calling `play_round`, and checking for a win or loss.
+- The `initialize_game` method initializes the game variables.
+- The `start_game` method opens the dictionary file, filters it for words of the correct size, and starts the game.
+
+Have fun playing Hangman!
+
 ## Files
 
 - `hangman.rb`: The main Ruby file containing the game logic.
 - `dictionary.csv`: A CSV file containing a list of English words used for word selection.
-
-## To-Do
-
-- Implement game saving: Allow users to save the game at the beginning of each round. Use serialization to save the game progress.
-- Load previous progress: At the beginning of the game, check if there is any previous progress saved. If so, load it and continue playing from the moment the game was saved.
 
 ## Contribution
 
