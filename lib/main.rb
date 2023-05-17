@@ -6,12 +6,12 @@ require 'yaml'
 class Game
   SAVE_FILE = 'saved_game.yaml'.freeze
 
-  # def initialize
-  #   @word = []
-  #   @guess_array = []
-  #   @used_letters = []
-  #   @guesses_left = 9
-  # end
+  def initialize
+    @word = []
+    @guess_array = []
+    @used_letters = []
+    @guesses_left = 9
+  end
 
   # Checks and returns words from the dictionary that have a length between 6 and
   # 11.
@@ -50,9 +50,13 @@ class Game
   def check_win
     if game_over? && @guesses_left.positive?
       puts 'You won!'
+      clear_saved_game
+    elsif !game_over? && @guesses_left.positive?
+      puts 'Your progress has been saved!'
     else
       puts 'You lose.'
       puts "The word was: #{@word.join}"
+      clear_saved_game
     end
   end
 
@@ -68,6 +72,45 @@ class Game
     end
   end
 
+  # Saves the game data to the YAML file
+  def save_game
+    game_data = {
+      'word' => @word,
+      'guessed_letters' => @guess_array,
+      'used_letters' => @used_letters,
+      'guesses_left' => @guesses_left
+    }
+    File.open(SAVE_FILE, 'w') do |file|
+      file.write(game_data.to_yaml)
+    end
+    puts 'Game saved.'
+  end
+
+  # Loads the game data from the YAML file
+  def load_game
+    return unless File.exist?(SAVE_FILE)
+
+    game_data = YAML.load_file(SAVE_FILE)
+    @word = game_data['word']
+    @guess_array = game_data['guessed_letters']
+    @used_letters = game_data['used_letters']
+    @guesses_left = game_data['guesses_left']
+  end
+
+  # Ask player if they want to load the save
+  def ask_to_load_save
+    answer = false
+    puts 'Do you want to load the previous game? (y/n)'
+    input = gets.chomp
+    answer = true if input == 'y'
+    answer
+  end
+
+  # Clears the saved game by deleting the YAML file if it exists
+  def clear_saved_game
+    File.delete(SAVE_FILE) if File.exist?(SAVE_FILE)
+  end
+
   # Handles a single round of the game, prompting the player for a guess and
   # updating the guess_array and used_letters accordingly.
   def play_round
@@ -75,21 +118,37 @@ class Game
       puts "Already guessed letters:  #{@used_letters.join('')}"
       guess = ''
       puts "#{@guesses_left} guesses left"
-      puts 'Enter your guess: '
+      puts 'Enter your guess (enter 1 to save game and quit): '
       guess = gets.chomp.to_s until guess.length == 1
-      check_letter(@word, guess, @guess_array)
-      @used_letters << "#{guess} " unless @used_letters.include?("#{guess} ")
-      @guesses_left -= 1
+      if guess == '1'
+        save_game
+        break
+      else
+        check_letter(@word, guess, @guess_array)
+        @used_letters << "#{guess} " unless @used_letters.include?("#{guess} ")
+        @guesses_left -= 1
+      end
     end
   end
 
   # Sets up and runs a game round by choosing a word, initializing variables, and # calling play_round and check_win.
   def play(file)
-    @word = choose_word(file)
+    if File.exist?(SAVE_FILE)
+      if ask_to_load_save
+        load_game
+      else
+        @word = choose_word(file)
+        @guess_array = Array.new(@word.length) { ' _ ' }
+        @used_letters = []
+        @guesses_left = 9
+      end
+    else
+      @word = choose_word(file)
+      @guess_array = Array.new(@word.length) { ' _ ' }
+      @used_letters = []
+      @guesses_left = 9
+    end
     puts "Your word is: #{@word.length} letters long"
-    @guess_array = Array.new(@word.length) { ' _ ' }
-    @used_letters = []
-    @guesses_left = 9
     play_round
     check_win
     play_again(file)
