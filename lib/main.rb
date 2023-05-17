@@ -62,7 +62,7 @@ class Game
 
   # Asks the player if they want to play again and initiates another game if the # input is 'y'.
   def play_again(file)
-    puts 'Would you like to play again? (y/n)'
+    puts 'Would you like to keepl playing (y/n)'
     input = gets.chomp until input == 'y' || input == 'n'
     case input
     when 'y'
@@ -133,25 +133,24 @@ class Game
 
   # Sets up and runs a game round by choosing a word, initializing variables, and # calling play_round and check_win.
   def play(file)
-    if File.exist?(SAVE_FILE)
-      if ask_to_load_save
-        load_game
-      else
-        @word = choose_word(file)
-        @guess_array = Array.new(@word.length) { ' _ ' }
-        @used_letters = []
-        @guesses_left = 9
-      end
+    if File.exist?(SAVE_FILE) && ask_to_load_save
+      load_game
     else
-      @word = choose_word(file)
-      @guess_array = Array.new(@word.length) { ' _ ' }
-      @used_letters = []
-      @guesses_left = 9
+      clear_saved_game
+      initialize_game(file)
     end
     puts "Your word is: #{@word.length} letters long"
     play_round
     check_win
     play_again(file)
+  end
+
+  # Initializes the game
+  def initialize_game(file)
+    @word = choose_word(file)
+    @guess_array = Array.new(@word.length) { ' _ ' }
+    @used_letters = []
+    @guesses_left = 9
   end
 
   # Opens the dictionary file, filters it for words of correct size, and starts
