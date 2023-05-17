@@ -2,17 +2,21 @@
 
 This is a simple implementation of the Hangman game in Ruby. The game randomly selects a word from a dictionary and challenges the player to guess the letters of the word within a limited number of guesses.
 
-## Dependencies
+## To-Do List
 
-This Hangman game relies on the following dependencies:
-
-- Ruby (at least version 3.2.2)
-- CSV (Ruby standard library)
+Improve user interface to enhance the gaming experience.
 
 ## Installation and Usage
 
 1. Clone or download the Hangman repository to your local machine.
 2. Navigate to the Hangman directory.
+
+### Dependencies
+
+This Hangman game relies on the following dependencies:
+
+- Ruby (at least version 3.2.2)
+- CSV (Ruby standard library)
 
 ### Game Instructions
 
